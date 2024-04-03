@@ -19,6 +19,7 @@ class grid:
 
     def __init__(self, rowCount, colCount, markerWinNum) -> None:
         
+        #check and set for winNum actually attainable in col and 
         if((markerWinNum > rowCount) or (markerWinNum > colCount)):
             markerWinNum = rowCount if(rowCount < colCount) else colCount
             
@@ -90,75 +91,73 @@ class grid:
         """
     
 
-        if(self.markerCount <= ((self.markerWinNum * 2) - 1)):
+        if(self.markerCount < ((self.markerWinNum * 2) - 1)):
             print("Not enough markers")
             return 0
 
         #Iterate through rows
         for rows in self.matrix:
             #Reset current marker type to check
-            markerCheck = 0
+            currMarkerType = 0
             markerCounter = 0
-            for slot in rows:
-                #Check slot is not null
-                if(slot != 0):
-                    #Update marker check 
-                    if(markerCheck == 0):
-                        markerCheck == slot                #Check slot is the same as current marker checking
-                    if(slot == markerCheck):
+            for marker in rows:
+                #Check marker is not null
+                if(marker != 0):
+                    #Update marker check
+                    if(currMarkerType == 0):
+                        currMarkerType = marker                
+                    #Check marker is the same as current marker checking
+                    if(marker == currMarkerType):
                         #increment checked marker count
                         markerCounter += 1
                         if(markerCounter == self.markerWinNum):
                             #this marker wins
-                            print(f"4 in a row in {rows}")
-                            return markerCheck
+                            print(f"ROW: 4 in a row in {rows}")
+                            return currMarkerType
                     else:
-                        #change marker check to current slot value and reset counter
-                        markerCheck = slot
-                        markerCounter = 0
+                        #change marker check to current marker value and reset counter
+                        currMarkerType = marker
+                        markerCounter = 1
                 else:
                     #reset counter and marker check
-                    if(markerCheck != 0):
-                        markerCheck = 0
-                        markerCounter = 0
+                    currMarkerType = 0
+                    markerCounter = 0
 
 
         #Iterate through columns
-        for col in self.matrix:
-            #Flag to determine 4 in a row
-            markerCheck = 0
+        for col in self.matrix.T:
             #Determines how many are the same in a row (always 1 in a row)
             markerCounter = 1
             #Check theres enough slots filled
             if(np.count_nonzero(col) >= self.markerWinNum):
-                currentMarker = 0
-                #Count repeated markers
-                for marker in col:
+                currentMarkerType = 0
+                #Count repeated markers (from the bottom)
+                for marker in col[::-1]:
                                             
                     #If a 0, impossible to have markers above
                     if marker == 0:
                         break
 
                     #If marker is the same
-                    if(marker == currentMarker):
+                    if(marker == currentMarkerType):
                         markerCounter = markerCounter + 1
                         
                         if(markerCounter == self.markerWinNum):
-                            print(f"4 in a row in: {col}")
-                            return markerType
+                            print(f"COL: 4 in a row in: {col[::-1]}")
+                            return currentMarkerType
                         
                     else:
                         #Set marker type
-                        currentMarker = marker
+                        currentMarkerType = marker
                         markerCounter = 1
                         
-            
-            if markerCheck == 0:
-                print("No vertical four in a rows")
+
+            #print(f"No vertical four in a rows for {col}")
 
     #Empties the grid
     def gridWipe(self):
         self.matrix = np.zeros((self.rowNum, self.colNum))
+        self.markerCount = 0
 
             
                                         
@@ -185,8 +184,8 @@ if __name__ == "__main__":
     testGrid.addMarker(2, player1Marker)
     testGrid.addMarker(1, player2Marker)    
     testGrid.addMarker(2, player1Marker)   
-    testGrid.checkConnect()
     testGrid.printGrid()
+    testGrid.checkConnect()
     testGrid.gridWipe()
 
 
@@ -199,8 +198,8 @@ if __name__ == "__main__":
     testGrid.addMarker(2, player2Marker)    
     testGrid.addMarker(2, player1Marker) 
     testGrid.addMarker(2, player2Marker)  
-    testGrid.checkConnect()
     testGrid.printGrid()
+    testGrid.checkConnect()
     testGrid.gridWipe()
 
 
@@ -212,8 +211,8 @@ if __name__ == "__main__":
     testGrid.addMarker(1, player1Marker)
     testGrid.addMarker(2, player2Marker)    
     testGrid.addMarker(1, player1Marker) 
-    testGrid.checkConnect()
     testGrid.printGrid()
+    testGrid.checkConnect()    
     testGrid.gridWipe()
 
 
@@ -226,17 +225,10 @@ if __name__ == "__main__":
     testGrid.addMarker(4, player2Marker)    
     testGrid.addMarker(1, player1Marker)
     testGrid.addMarker(5, player2Marker)      
-    testGrid.checkConnect()
     testGrid.printGrid()
+    testGrid.checkConnect()    
     testGrid.gridWipe()
 
 
 
     
-
-    
-
-
-    #No win check
-    testGrid.checkConnect()
-
