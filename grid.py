@@ -82,7 +82,7 @@ class grid:
 
         """
         Notes:
-            -Only check after the 7th counter
+            -Only check after the appropriate number of counters
         1) Check horizontal (rows)
         2) Check Vertical   (columns)
         3) Check Diagonal   (???)
@@ -153,6 +153,54 @@ class grid:
                         
 
             #print(f"No vertical four in a rows for {col}")
+                        
+
+
+        #Diagonal Check
+                        
+        #TODO rows and columns check if okay from top? (Do once at start then feed valid positions to diagonal checker)
+        
+
+        """
+        Check that you start on a marker within a certain range
+        i.e. 
+        """
+
+    #Recursive Diagonal Check
+    def diagonalWinCheck(self, direction, rowPos, colPos, markerCount, currentMarkerType):
+
+        #Determine the movement
+        if direction == "UL":
+            rowMove = -1
+            colMove = -1
+        elif direction == "UR":
+            rowMove = -1
+            colMove = 1
+        else:
+            print("INVALID DIRECTION")
+            return -1
+        
+        #Update the position
+        nextRow = rowPos + rowMove
+        nextCol = colPos + colMove
+
+        #Check the next position
+        if self.matrix[nextRow, nextCol] == currentMarkerType:
+            markerCount = markerCount + 1
+
+            #If the fourth in the row
+            if markerCount == self.markerWinNum:
+                return currentMarkerType
+            
+            #Check the next marker
+            else:
+                return self.diagonalWinCheck(direction, nextRow, nextCol, markerCount, currentMarkerType)
+            
+        else:
+            return 0
+
+        
+
 
     #Empties the grid
     def gridWipe(self):
@@ -171,7 +219,7 @@ if __name__ == "__main__":
     player1Marker = markerType.BLUE
     player2Marker = markerType.PINK
 
-    testGrid = grid(7, 6, markerWinNum = 4)
+    testGrid = grid(6, 7, markerWinNum = 4)
 
 
     testGrid.printGrid()
@@ -228,6 +276,12 @@ if __name__ == "__main__":
     testGrid.printGrid()
     testGrid.checkConnect()    
     testGrid.gridWipe()
+
+
+
+
+    #TODO: Diagonal Win Player 1 
+
 
 
 
